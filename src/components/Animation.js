@@ -1,30 +1,32 @@
-import React from 'react';
+const React = require('react');
 
 class Animation extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       url: ' http://placehold.it/500x150'
     };
+    this.showLoadingBar = this.showLoadingBar.bind(this);
+    this.getNewCat = this.getNewCat.bind(this);
   }
 
-  getNewCat = () => {
+  componentWillUpdate(nextProps, nextState){
+    this.showLoadingBar();
+  }
+
+  getNewCat() {
     fetch('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC')
       .then((res, err) => {
         if (err) {
           console.log('Something went wrong with fetching your new cat!', err)
         } else {
-          return res.json()
+          res.json().then(result => this.setState({ url: result.data.fixed_height_downsampled_url }));
         }
-      })
-      .then(result => this.setState({
-        url: result.data.fixed_height_downsampled_url
-      }));
+      });
   }
 
-  showLoadingBar = () => {
+  showLoadingBar() {
     const progressBar = document.getElementById('progress-bar');
     progressBar.className = 'off on';
     setTimeout(() => progressBar.className = 'off', 1100);
@@ -33,11 +35,11 @@ class Animation extends React.Component {
   render() {
     return (
       <div>
-        <img src={this.state.url} height="100px"/>
+        <img src={this.state.url} height="100px" alt="pic"/>
         <div><button onClick={this.getNewCat}>New random .gif!</button></div>
       </div>
     )
   }
 }
 
-export default Animation;
+module.exports = Animation;
