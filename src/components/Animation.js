@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const React = require('react');
 
 class Animation extends React.Component {
@@ -43,3 +44,52 @@ class Animation extends React.Component {
 }
 
 module.exports = Animation;
+=======
+import React from 'react';
+
+class Animation extends React.Component {
+
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      url: ' http://placehold.it/500x150'
+    };
+  }
+
+  componentWillUpdate() {
+    this.showLoadingBar();
+  }
+
+  getNewCat = () => {
+    fetch('http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC')
+      .then((res, err) => {
+        if (err) {
+          console.log('Something went wrong with fetching your new cat!', err)
+        } else {
+          return res.json()
+        }
+      })
+      .then(result => this.setState({ 
+        url: result.data.fixed_height_downsampled_url
+      }));
+  }
+
+  showLoadingBar = () => {
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.className = 'off on';
+    setTimeout(() => progressBar.className = 'off', 1100);
+  }
+
+  render() {
+    return (
+      <div>
+        <img src={this.state.url} height="100px"/>
+        <div><button onClick={this.getNewCat}>New random .gif!</button></div>
+      </div>
+    )
+  }
+}
+
+export default Animation;
+>>>>>>> d08882495ec1e80a33a7a4a4f431e7852425a023
